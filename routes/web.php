@@ -15,12 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/',[HomeController::class,'index'])->name('home');
-Route::get('/search',[HomeController::class,'search'])->name('search');
+Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/search', [HomeController::class,'search'])->name('search');
 Route::prefix('api')->group(function () {
     Route::get('country/{id}', [APIController::class,'country'])->name('country');
-    Route::get('institute/{id}',[APIController::class,'institute'])->name('institute');
-    Route::get('level/{id}',[APIController::class,'level'])->name('level');
+    Route::get('institute/{id}', [APIController::class,'institute'])->name('institute');
+    Route::get('level/{id}', [APIController::class,'level'])->name('level');
+    Route::get('all', [APIController::class,'all'])->name('all');
     // Route::get('course/{id}',[DropdownController::class,'course'])->name('course');
 });
 
