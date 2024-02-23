@@ -2,7 +2,7 @@
 @section('content')
 <div class="container">
     <div class="card p-3 mt-3">
-        <form action="{{route('search')}}" method="GET">
+        <form id="search_form" method="GET">
             <div class="row">
                 <div class="col-sm-3">
                     <?php
@@ -57,6 +57,9 @@
             <button type="submit" class="btn btn-primary mt-2 w-100">Submit</button>
         </form>
     </div>
+    <div class="row justify-content-center" id="search_data">
+    </div>
+
 </div>
 @endsection
 @section('script')
@@ -207,7 +210,40 @@
                     }
                 });
             }
-        
+        $('#search_form').submit(function(e){
+            e.preventDefault();
+            let country = $('#country').val();
+            let institute = $('#institute').val();
+            let level = $('#level').val();
+            let course = $('#course').val();
+            
+            let data = {
+                country: country,
+                institute: institute,
+                level: level,
+                course:course
+            }
+
+            $.ajax({
+                url:'api/main',
+                method:'GET',
+                data: data,
+                success:function(response){
+                    if(response.status == 200){
+                        //console.log(response.search_result.length);
+                        $('#search_data').html('');
+                        $.each(response.search_result,function(key,item){
+                            $('#search_data').append('<div class="col-sm-3 m-2"><div class="card mt-4" style="width: 18rem;"><div class="card-body"><h5 class="card-title text-center">'+item.courseName+'</h5><p class="card-text text-center">'+item.countryName+'</p><p class="card-text text-center">'+item.instituteName+'</p><p class="card-text text-center">'+item.levelName+'</p><a href="#" class="btn btn-primary w-100">View Details</a></div></div></div>');
+                        });
+                        
+                    }
+                    if(response.status == 404){
+                        $('#search_data').html('');
+                        $('#search_data').append('<h4 class="text-center mt-3">'+response.search_result+'</h4>');
+                    }
+                }
+            });
+        });
     })
 </script>
 @endsection
