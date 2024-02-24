@@ -42,48 +42,36 @@ class APIController extends Controller
             ]);
         }
     }
-    public function countryfilter(Request $request)
+    public function all(Request $request)
     {
-        var_dump($request->all());
-        die();
-        $institute = Institute::with('course')->where('country', $id)->get();
-        $finalArray = [];
-        foreach ($institute as $institutes) {
-            $instituteData = $institutes->toArray(); // Get the basic attributes
-
-            // Flatten the "course" array
-            $courses = [];
-            foreach ($instituteData['course'] as $course) {
-                $courses[] = $course;
-            }
-
-            $instituteData['course'] = $courses;
-
-            $finalArray[] = $instituteData;
+        $institutes_select = 'institutes.id as institutesId, institutes.name as institutesName';
+        $courses_select = 'courses.id as courseId, courses.name as courseName';
+        $level_select = 'levels.id as levelId,levels.name as levelName';
+        $country_select = 'country.id as countryId,country.name as countryName';
+        $join = 'JOIN levels ON courses.level = levels.id JOIN course_institute ON courses.id = course_institute.course_id JOIN institutes ON course_institute.institute_id=institutes.id JOIN country ON institutes.country = country.id';
+        $where = '';
+        if(isset($request->country) && !empty($request->country)) {
+            $where .= " AND country.id=".$request->country."";
         }
-        $allCourseArray = [];
-
-        foreach ($finalArray as $item) {
-            if (isset($item['course'])) {
-                $allCourseArray = array_merge($allCourseArray, $item['course']);
-            }
+        if(isset($request->institute) && !empty($request->institute)) {
+            $where .= " AND institutes.id=".$request->institute."";
         }
-        $course = array_values(array_map("unserialize", array_unique(array_map("serialize", $allCourseArray), SORT_REGULAR)));
-        //$course = $this->uniqueArray($course,'name');
-
-        $level = array();
-        foreach($course as $key => $level_ids) {
-            $levels = Level::where('id', $level_ids['level'])->get();
-            $level[] = $levels;
+        if(isset($request->level) && !empty($request->level)) {
+            $where .= " AND levels.id=".$request->level."";
         }
-        $flattenedArray = collect($level)->flatten()->toArray();
-        $study_level = array_values(array_map("unserialize", array_unique(array_unique(array_map("serialize", $flattenedArray), SORT_REGULAR))));
-
+        if(isset($request->course) && !empty($request->course)) {
+            $where .= " AND courses.id=".$request->course."";
+        }
+        $institute_results = DB::select('SELECT DISTINCT '.$institutes_select.' FROM courses '.$join.' WHERE 1 '.$where.'');
+        $course_results = DB::select('SELECT DISTINCT '.$courses_select.' FROM courses '.$join.' WHERE 1 '.$where.'');
+        $level_results = DB::select('SELECT DISTINCT '.$level_select.' FROM courses '.$join.' WHERE 1 '.$where.'');
+        $country_results = DB::select('SELECT DISTINCT '.$country_select.' FROM courses '.$join.' WHERE 1 '.$where.'');
         return response()->json([
             'status' => 200,
-            'institute' => $institute,
-            'course' => $course,
-            'study_level' => $study_level
+            'country' => $country_results,
+            'institute' => $institute_results,
+            'course' => $course_results,
+            'study_level' => $level_results
         ]);
     }
     public function country($id)

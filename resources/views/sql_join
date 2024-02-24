@@ -1,0 +1,5 @@
+SELECT c.name, i.name,co.name,l.name FROM country c JOIN institutes i ON c.id = i.country JOIN course_institute ci ON i.id = ci.institute_id JOIN courses co ON ci.course_id = co.id JOIN levels l ON co.level=l.id;
+
+
+//latest
+SELECT DISTINCT courses.id as courseID,courses.name as courseName FROM courses JOIN levels on courses.level = levels.id JOIN course_institute ON courses.id = course_institute.course_id JOIN institutes ON course_institute.institute_id = institutes.id JOIN country ON institutes.country = country.id WHERE levels.id=1 AND country.id=1;
