@@ -78,6 +78,7 @@
                 level:level,
                 course:course
             }
+            
             if(country != null){
                 $.ajax({
                     url:'/api/all',
@@ -85,7 +86,6 @@
                     data:data,
                     dataType:'json',
                     success: function(response){
-                        console.log(response);
                         if(response.status == 200){
                             if(institute == ""){
                                 institutes(response.institute);
@@ -121,11 +121,11 @@
                 let course = $('#course').val();
 
                 let data = {
-                    country: country,
                     institute:institute,
                     level:level,
                     course:course
                 }
+                console.log(data);
                 if(institute != null){
                     $.ajax({
                         url:'/api/all',
@@ -133,12 +133,14 @@
                         data:data,
                         dataType:'json',
                         success: function(response){
+                            console.log(response);
                             if(response.status == 200){
                                 // countries(response.country);
                                 
                                 if(country == ""){
                                     countriess(response.country);
                                 }
+                                
                                 if(country != ""){
                                     countriesValue(response.country);
                                 }

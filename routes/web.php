@@ -15,8 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', [HomeController::class,'index'])->name('home');
+Route::get('/home_old', [HomeController::class,'index'])->name('home');
 Route::get('/home2', [HomeController::class,'home2'])->name('home2');
+Route::get('/', [HomeController::class,'home3'])->name('home3');
 Route::get('/search', [HomeController::class,'search'])->name('search');
 Route::prefix('api')->group(function () {
     Route::get('main', [APIController::class,'mainsearch'])->name('mainsearch');

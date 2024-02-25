@@ -16,6 +16,11 @@ class HomeController extends Controller
         return view('home2');
     }
 
+    public function home3()
+    {
+        return view('home3');
+    }
+
     public function search()
     {
         return view('search');
